@@ -12,14 +12,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     var blockchain = new Blockchain()
+
+    console.log('Mining block 1...');
     blockchain.addBlock(new Block(1, "10/07/2017", { amount: 4 }));
+
+    console.log('Mining block 2...');
     blockchain.addBlock(new Block(2, "12/07/2017", { amount: 10 }));
-
-    console.log(JSON.stringify(blockchain, null, 4,));
-    console.log('Is blockchain valid?', blockchain.isChainValid());
-
-    blockchain.chain[1].data = { amount: 100 };
-    blockchain.chain[1].hash = blockchain.chain[1].calculateHash();
-    console.log('Is blockchain valid?', blockchain.isChainValid());
   }
 }

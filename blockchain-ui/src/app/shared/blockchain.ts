@@ -9,9 +9,12 @@ export class Blockchain {
     public set chain(v : Block[]) {
         this._chain = v;
     }
+
+    difficulty: number;
     
     constructor() {
         this.chain = [this.createGenesisBlock()]
+        this.difficulty = 5;
     }
 
     createGenesisBlock(): Block {
@@ -28,7 +31,7 @@ export class Blockchain {
      */
     addBlock(newBlock: Block) {
         newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.hash = newBlock.calculateHash();
+        newBlock.mineBlock(this.difficulty);
         this.chain.push(newBlock);
     }
 
