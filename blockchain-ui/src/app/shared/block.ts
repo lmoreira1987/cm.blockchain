@@ -1,3 +1,4 @@
+import { Transaction } from './transaction';
 import CryptoES from 'crypto-es';
 
 export class Block {
@@ -18,12 +19,12 @@ export class Block {
         this._timestamp = v;
     }
     
-    private _data : any;
-    public get data() : any {
-        return this._data;
+    private _transactions : Transaction[];
+    public get transactions() : Transaction[] {
+        return this._transactions;
     }
-    public set data(v : any) {
-        this._data = v;
+    public set transactions(v : Transaction[]) {
+        this._transactions = v;
     }
     
     private _previousHash : any;
@@ -41,7 +42,6 @@ export class Block {
     public set hash(v : any) {
         this._hash = v;
     }
-
     
     private _nonce : number;
     public get nonce() : number {
@@ -50,7 +50,6 @@ export class Block {
     public set nonce(v : number) {
         this._nonce = v;
     }
-    
 
     /**
      * index = where the block sits on the chain
@@ -58,25 +57,34 @@ export class Block {
      * data = any type of data associated with this block
      * previousHash = contains the hash of the block before this one
      */
-    constructor(index: any, timestamp: any, data: any, previousHash: any = '') {
-        this.index = index
+    constructor(timestamp: any, transactions: any, previousHash: any = '') {
         this.timestamp = timestamp;
-        this.data = data;
+        this.transactions = transactions;
         this.previousHash = previousHash;
-        this.hash = this.calculateHash();
         this.nonce = 0;
+        this.hash = this.calculateHash();
     }
 
     calculateHash() {
-        return CryptoES.SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
+        return CryptoES.SHA256(this.previousHash + this.timestamp + JSON.stringify(this.transactions) + this.nonce).toString();
     }
 
-    mineBlock(difficulty) {
+    mineBlock(difficulty: number) {
         while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
             this.nonce++
             this.hash = this.calculateHash();
         }
 
         console.log("Block mined: " + this.hash);
+    }
+
+    hasValidTransaction() {
+        for (const tx of this.transactions) {
+            if (!tx.isValid()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
