@@ -8,13 +8,18 @@ import { Blockchain } from './shared/blockchain';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'blockchain-ui'; 
+  title = 'blockchain-ui';
 
   ngOnInit() {
-    var block = new Blockchain()
-    block.addBlock(new Block(1, "10/07/2017", {amount: 4}));
-    block.addBlock(new Block(1, "12/07/2017", {amount: 10}));
+    var blockchain = new Blockchain()
+    blockchain.addBlock(new Block(1, "10/07/2017", { amount: 4 }));
+    blockchain.addBlock(new Block(2, "12/07/2017", { amount: 10 }));
 
-    console.log(JSON.stringify(block, null, 4, )); 
-  }  
+    console.log(JSON.stringify(blockchain, null, 4,));
+    console.log('Is blockchain valid?', blockchain.isChainValid());
+
+    blockchain.chain[1].data = { amount: 100 };
+    blockchain.chain[1].hash = blockchain.chain[1].calculateHash();
+    console.log('Is blockchain valid?', blockchain.isChainValid());
+  }
 }
